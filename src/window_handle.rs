@@ -41,7 +41,7 @@ use crate::{
         UPDATE_MESSAGES,
     },
     view::{update_data, view_children_set_parent_id, view_tab_navigation, View, ViewData},
-    widgets::{default_theme, Theme},
+    widgets::{default_theme, Theme, WidgetTheme},
 };
 
 /// The top-level window handle that owns the winit Window.
@@ -79,7 +79,7 @@ impl WindowHandle {
         window: winit::window::Window,
         view_fn: impl FnOnce(winit::window::WindowId) -> Box<dyn View> + 'static,
         transparent: bool,
-        themed: bool,
+        widget_theme: WidgetTheme,
     ) -> Self {
         let scope = Scope::new();
         let window_id = window.id();
@@ -90,6 +90,11 @@ impl WindowHandle {
         let size = scope.create_rw_signal(Size::new(size.width, size.height));
         let theme = scope.create_rw_signal(window.theme());
         let is_maximized = window.is_maximized();
+        let widget_theme: Option<Theme> = match widget_theme {
+            WidgetTheme::Blank => None,
+            WidgetTheme::Default => Some(default_theme()),
+            WidgetTheme::Custom(custom_theme) => Some(custom_theme()),
+        };
 
         set_current_view(id);
 
@@ -133,7 +138,7 @@ impl WindowHandle {
             app_state: AppState::new(),
             paint_state,
             size,
-            theme: themed.then(default_theme),
+            theme: widget_theme,
             os_theme: theme,
             is_maximized,
             transparent,

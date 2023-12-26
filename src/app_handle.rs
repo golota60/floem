@@ -15,6 +15,7 @@ use crate::{
     inspector::Capture,
     profiler::{Profile, ProfileEvent},
     view::View,
+    widgets::WidgetTheme,
     window::WindowConfig,
     window_handle::WindowHandle,
 };
@@ -244,7 +245,7 @@ impl ApplicationHandle {
     ) {
         let mut window_builder = winit::window::WindowBuilder::new();
         let transparent = config.as_ref().and_then(|c| c.transparent).unwrap_or(false);
-        let themed = if let Some(config) = config {
+        let widget_theme = if let Some(config) = config {
             if let Some(size) = config.size {
                 let size = if size.width == 0.0 || size.height == 0.0 {
                     Size::new(800.0, 600.0)
@@ -285,9 +286,9 @@ impl ApplicationHandle {
             if let Some(title) = config.title {
                 window_builder = window_builder.with_title(title);
             }
-            config.themed.unwrap_or(true)
+            config.theme.unwrap_or(WidgetTheme::default())
         } else {
-            true
+            WidgetTheme::default()
         };
         let result = window_builder.build(event_loop);
         let window = match result {
@@ -295,7 +296,8 @@ impl ApplicationHandle {
             Err(_) => return,
         };
         let window_id = window.id();
-        let window_handle = WindowHandle::new(window, view_fn, transparent, themed);
+        let window_handle: WindowHandle =
+            WindowHandle::new(window, view_fn, transparent, widget_theme);
         self.window_handles.insert(window_id, window_handle);
     }
 

@@ -1,11 +1,14 @@
+use std::rc::Rc;
+
 use floem::{
     event::{Event, EventListener},
     keyboard::{Key, NamedKey},
     kurbo::Size,
-    style::AlignContent,
+    peniko::Color,
+    style::{AlignContent, Style},
     view::View,
     views::{container, h_stack, label, v_stack, Decorators},
-    widgets::button,
+    widgets::{button, Theme, WidgetTheme},
     window::{new_window, WindowConfig},
 };
 
@@ -72,7 +75,13 @@ fn app_view() -> impl View {
                     Some(
                         WindowConfig::default()
                             .size(Size::new(400.0, 250.0))
-                            .title("Tab navigation"),
+                            .title("Tab navigation")
+                            .theme({
+                                WidgetTheme::Custom(|| Theme {
+                                    background: Color::rgb8(248, 248, 248),
+                                    style: Rc::new(Style::new()),
+                                })
+                            }),
                     ),
                 );
             })

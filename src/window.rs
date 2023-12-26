@@ -6,6 +6,7 @@ pub use winit::window::WindowButtons;
 pub use winit::window::WindowId;
 pub use winit::window::WindowLevel;
 
+use crate::widgets::WidgetTheme;
 use crate::{
     app::{add_app_update_event, AppUpdateEvent},
     view::View,
@@ -23,7 +24,7 @@ pub struct WindowConfig {
     pub(crate) enabled_buttons: Option<WindowButtons>,
     pub(crate) resizable: Option<bool>,
     pub(crate) window_level: Option<WindowLevel>,
-    pub(crate) themed: Option<bool>,
+    pub(crate) theme: Option<WidgetTheme>,
 }
 
 impl WindowConfig {
@@ -77,8 +78,8 @@ impl WindowConfig {
         self
     }
 
-    pub fn themed(mut self, themed: bool) -> Self {
-        self.themed = Some(themed);
+    pub fn theme(mut self, widget_theme: WidgetTheme) -> Self {
+        self.theme = Some(widget_theme);
         self
     }
 }

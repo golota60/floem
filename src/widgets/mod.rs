@@ -29,9 +29,18 @@ pub use button::*;
 mod text_input;
 pub use text_input::*;
 
-pub(crate) struct Theme {
-    pub(crate) background: Color,
-    pub(crate) style: Rc<Style>,
+pub struct Theme {
+    pub background: Color,
+    pub style: Rc<Style>,
+}
+
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy)]
+pub enum WidgetTheme {
+    #[default]
+    Blank,
+    Default,
+
+    Custom(fn() -> Theme),
 }
 
 pub(crate) fn default_theme() -> Theme {
